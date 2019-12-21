@@ -63,6 +63,23 @@ var controller = {
 
             return res.status(200).send(projectDeleted);
         });
+    },
+    uploadImage: (req, res) => {
+        var projectId = req.params.id;
+        var fileName = 'Sin imagen para subir';
+        var splitName = req.files.image.path.split('/');
+        fileName = splitName[1];
+
+        if(req.files){
+            Project.findByIdAndUpdate(projectId, {image: fileName}, {new: true}, (err, imageSaved) => {
+                if(err) return res.status(500).send("Error al subir la imagen");
+                if(!imageSaved) return res.status(404).send("Imagen no actualizada");
+
+                return res.status(200).send(imageSaved);
+            });
+        } else {
+            return res.status(200).send(fileName);
+        }
     }
 }
 
